@@ -306,6 +306,107 @@ commit;
 ---------------------------------------------
 -- Tables for Visualization
 ---------------------------------------------
+
+-- Trip Frequency: Analyze the frequency of bike trips taken by annual members and casual riders. Compare the average number of trips per month or per year for each group.
+SELECT
+    member_casual,
+    YEAR(started_at) AS year,
+    MONTH(started_at) AS month,
+    AVG(trip_count) AS avg_trips
+FROM
+    (
+        SELECT
+            member_casual,
+            COUNT(*) AS trip_count,
+            started_at
+        FROM
+            cyclist_working
+        GROUP BY
+            member_casual,
+            YEAR(started_at),
+            MONTH(started_at),
+            started_at
+    ) AS subquery
+GROUP BY
+    member_casual,
+    YEAR(started_at),
+    MONTH(started_at)
+ORDER BY
+    member_casual,
+    YEAR(started_at),
+    MONTH(started_at);
+
+-- Trip Duration: Determine the average duration of bike trips for annual members and casual riders. Compare the average trip length to identify any significant differences in how long each group tends to ride.
+SELECT
+    member_casual,
+    AVG(ride_length) AS avg_trip_length
+FROM
+    cyclist_working
+GROUP BY
+    member_casual;
+    
+-- Popular Stations: Identify the most frequently used stations by annual members and casual riders. This analysis can provide insights into their preferred starting and ending points, which may indicate different usage patterns.
+SELECT
+    member_casual,
+    start_station_name,
+    COUNT(*) AS num_trips
+FROM
+    cyclist_working
+GROUP BY
+    member_casual,
+    start_station_name
+ORDER BY
+    member_casual,
+    num_trips DESC;
+
+-- Trip Purpose: Explore the purpose of bike trips for annual members and casual riders. This could include commuting, leisure rides, exercise, or other specific categories. Understanding the different motivations for riding can provide insights into their usage patterns.
+SELECT
+    member_casual,
+    start_station_name,
+    end_station_name,
+    COUNT(*) AS num_of_trips
+FROM cyclist_working
+GROUP BY member_casual, start_station_name, end_station_name
+ORDER BY member_casual, num_of_trips DESC;
+
+-- Peak Hours: Analyze the time of day when annual members and casual riders are most active. Determine if there are any specific peak hours or usage patterns that differentiate the two groups.
+SELECT
+    member_casual,
+    HOUR(started_at) AS hour_of_day,
+    COUNT(*) AS num_trips
+FROM
+    cyclist_working
+GROUP BY
+    member_casual,
+    HOUR(started_at)
+ORDER BY
+    member_casual,
+    num_trips DESC;
+
+-- Trip Distance: Evaluate the average distance covered by annual members and casual riders. This analysis can help identify if one group tends to take longer rides compared to the other.
+SELECT
+    member_casual,
+    AVG(
+        2 * 3961 * ASIN(
+            SQRT(
+                POWER(SIN((end_lat - start_lat) * pi() / 180 / 2), 2) +
+                COS(start_lat * pi() / 180) * COS(end_lat * pi() / 180) *
+                POWER(SIN((end_lng - start_lng) * pi() / 180 / 2), 2)
+            )
+        )
+    ) AS avg_distance
+FROM cyclist_working
+GROUP BY member_casual;
+
+-- Seasonal Variations: Examine whether there are any seasonal variations in bike usage between annual members and casual riders. This could involve analyzing usage patterns during different months or seasons of the year.
+SELECT
+    DATE_FORMAT(started_at, '%Y-%m') AS month,
+    member_casual,
+    COUNT(*) AS num_of_trips
+FROM cyclist_working
+GROUP BY month, member_casual
+ORDER BY month, member_casual;
+
 -- Calculating Number of Riders Each Day by User Type and Creating View to store date for Further Visualization
 
 -- Create new column trip duration secs
