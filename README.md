@@ -42,7 +42,7 @@ After cleaning the data, I queried the data to answer the following questions:
 7. What are the top 10 stations with the highest number of casual cyclists? 
 
 ## 📊 Presentation
-Since I only had Tableau Public, I queried the data from MS SQL and loaded it into Excel. Then, I connected Excel to Tableau Public to create data visualization.
+Since I only had Tableau Public, I queried the data from MYSQL and loaded it into Excel. Then, I connected Excel to Tableau Public to create data visualization.
 The dashboard can be found [here](https://public.tableau.com/app/profile/vikramjeet.singh.ahdan7968/viz/CyclisticbikeCaseStudy/CaseStudyReport?publish=yes).
 
 ## 💡 Conclusion and Recommendation
